@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +20,6 @@ import com.dusan.forum.response.PostResponse;
 import com.dusan.forum.service.PostService;
 
 @RestController
-@RequestMapping
 public class PostController {
 
 	@Autowired
@@ -38,6 +36,15 @@ public class PostController {
 	@GetMapping("/posts/{postId}")
 	public PostResponse getPost(@PathVariable long postId) {
 		return postService.getPost(postId);
+	}
+	
+	// get sub posts
+	@GetMapping("/posts/{postId}/posts")
+	public PagedModel<PostResponse> getSubPosts(
+			@PathVariable long postId, 
+			@RequestParam(value = "page", defaultValue = "1") int page, 
+			@RequestParam(value = "limit", defaultValue="10") int limit){
+		return postService.getSubPosts(postId, page, limit);
 	}
 	
 	// get topic posts
@@ -60,7 +67,8 @@ public class PostController {
 	
 	// edit post
 	@PutMapping("/posts/{postId}")
-	public void editPost(@PathVariable int postId, @Valid @RequestBody PostRequest editPostRequest) {
+	public void editPost(@PathVariable long userId, @PathVariable long postId, 
+			@Valid @RequestBody PostRequest editPostRequest) {
 		postService.editPost(postId, editPostRequest);
 	}
 
@@ -69,11 +77,4 @@ public class PostController {
 	public void deletePost(@PathVariable long postId) {
 		postService.deletePost(postId);
 	}
-	
-	// delete post of specific user
-	@DeleteMapping ("/users/{userId}/posts/{postId}")
-	public void deleteUserPost(@PathVariable long userId, @PathVariable long postId) {
-		postService.deleteUserPost(userId, postId);
-	}
-
 }

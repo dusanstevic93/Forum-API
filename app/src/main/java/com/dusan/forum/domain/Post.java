@@ -7,6 +7,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,7 +25,8 @@ public class Post {
 	private LocalDateTime createdOn;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Post parentPost;
+	@JoinColumn(name = "parent_post_id")
+	private Post parent;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Topic topic;
@@ -56,12 +58,12 @@ public class Post {
 		this.createdOn = createdOn;
 	}
 
-	public Post getParentPost() {
-		return parentPost;
+	public Post getParent() {
+		return parent;
 	}
 
-	public void setParentPost(Post parentPost) {
-		this.parentPost = parentPost;
+	public void setParentPost(Post parent) {
+		this.parent = parent;
 	}
 
 	public Topic getTopic() {

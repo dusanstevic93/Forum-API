@@ -24,7 +24,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
 		Authentication auth = authManager.authenticate(authToken);
 		UserDetails userDetails = (UserDetails) auth.getPrincipal();
 		String token = JWTUtills.createToken(userDetails);
-		return "Bearer " + token;
+		return token;
 		
 	}
 

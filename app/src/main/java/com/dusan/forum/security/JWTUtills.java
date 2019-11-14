@@ -14,7 +14,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JWTUtills {
 
-	private static String SECRET = "x!A%D*G-KaPdSgVkYp3s6v9y$B?E(H+M";
+	private static String SECRET = "Xn2r5u8x/A?D(G+KbPeSgVkYp3s6v9y$B&E)H@McQfTjWmZq4t7w!z%C*F-JaNdR";
 	private static long EXPIRATION = 86400000L; // 24 hours
 
 	public static String createToken(UserDetails userDetails) {
@@ -27,7 +27,7 @@ public class JWTUtills {
 				.setSubject(userDetails.getUsername())
 				.claim("roles", roles)
 				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-				.signWith(SignatureAlgorithm.HS256, SECRET)
+				.signWith(SignatureAlgorithm.HS512, SECRET)
 				.compact();
 	}
 

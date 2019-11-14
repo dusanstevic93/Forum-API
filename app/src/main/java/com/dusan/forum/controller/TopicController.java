@@ -60,10 +60,4 @@ public class TopicController {
 	public void deleteTopic(@PathVariable long topicId) {
 		topicService.deleteTopic(topicId);
 	}
-
-	// delete topic of specific user
-	@DeleteMapping("/users/{userId}/topics/{topicId}")
-	public void deleteUserTopic(@PathVariable long userId, long topicId) {
-		topicService.deleteUserTopic(userId, topicId);
-	}
 }

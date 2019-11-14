@@ -84,18 +84,6 @@ public class TopicServiceImp implements TopicService {
 	}
 
 	@Override
-	public void deleteUserTopic(long userId, long topicId) {
-		Optional<User> optUser = userRepository.findById(userId);
-		if (!optUser.isPresent())
-			throw new UserNotFoundException();
-		Optional<Topic> optTopic = topicRepository.findById(topicId);
-		if (!optTopic.isPresent())
-			throw new TopicNotFoundException();
-		topicRepository.deleteByUserIdAndId(userId, topicId);
-		
-	}
-
-	@Override
 	public PagedModel<TopicResponse> getForumTopics(long forumId, int page, int limit) {
 		Optional<Forum> optForum = forumRepository.findById(forumId);
 		if (!optForum.isPresent())

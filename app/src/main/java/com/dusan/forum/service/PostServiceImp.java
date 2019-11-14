@@ -36,13 +36,13 @@ public class PostServiceImp implements PostService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private TopicRepository topicRepository;
-	
+
 	@Autowired
 	private PostRepository postRepository;
-	
+
 	@Override
 	public void createPost(long topicId, PostRequest createPostRequest) {
 		Post post = new Post();
@@ -71,7 +71,6 @@ public class PostServiceImp implements PostService {
 			throw new PostNotFoundException();
 		Post post = optPost.get();
 		return createResponse(post);
-		
 	}
 
 	@Override
@@ -83,14 +82,13 @@ public class PostServiceImp implements PostService {
 	}
 
 	@Override
-	public void deleteUserPost(long userId, long postId) {
-		Optional<User> optUser = userRepository.findById(userId);
-		if (!optUser.isPresent())
-			throw new UserNotFoundException();
+	public PagedModel<PostResponse> getSubPosts(long postId, int page, int limit) {
 		Optional<Post> optPost = postRepository.findById(postId);
 		if (!optPost.isPresent())
 			throw new PostNotFoundException();
-		postRepository.deleteByUserIdAndId(userId, postId);
+		Pageable pageable = PageRequest.of(page, limit);
+		Page<Post> postPage = postRepository.findAllByParentId(postId, pageable);
+		return createResponsePage(postPage);
 	}
 
 	@Override
@@ -98,44 +96,6 @@ public class PostServiceImp implements PostService {
 		Pageable pageable = PageRequest.of(page - 1, limit);
 		Page<Post> postPage = postRepository.findAllByTopicId(topicId, pageable);
 		return createResponsePage(postPage);
-	}
-
-	private void createLinks(PostResponse response) {
-		Link selfLink = linkTo(methodOn(PostController.class).getPost(response.getPostId())).withSelfRel();
-		if (response.getParentId() != 0) {
-			Link parentLink = linkTo(methodOn(PostController.class).getPost(response.getParentId())).withRel("parent");
-			response.add(parentLink);
-		}
-		Link userLink = linkTo(methodOn(UserController.class).getUser(response.getUserId())).withRel("user");
-		Link topicLink = linkTo(methodOn(TopicController.class).getTopic(response.getTopicId())).withRel("topic");		
-		response.add(selfLink, userLink, topicLink);
-	}
-	
-	private PostResponse createResponse(Post post) {
-		PostResponse response = new PostResponse();
-		response.setPostId(post.getId());
-		if (post.getParentPost() != null)
-			response.setParentId(post.getParentPost().getId());
-		response.setTopicId(post.getTopic().getId());
-		response.setText(post.getText());
-		response.setCreatedOn(post.getCreatedOn());
-		response.setUserId(post.getUser().getId());
-		createLinks(response);
-		return response;
-	}
-	
-	private PagedModel<PostResponse> createResponsePage(Page<Post> postPage){
-		int size = postPage.getSize();
-		int page = postPage.getNumber() + 1;
-		int totalPages = postPage.getTotalPages();
-		long totalElements = postPage.getTotalElements();
-		PageMetadata metadata = new PageMetadata(size, page, totalElements, totalPages);
-		List<PostResponse> responses = new ArrayList<>();
-		for (Post post : postPage.getContent()) {
-			PostResponse response = createResponse(post);
-			responses.add(response);
-		}
-		return new PagedModel<>(responses, metadata);
 	}
 
 	@Override
@@ -154,7 +114,42 @@ public class PostServiceImp implements PostService {
 		Page<Post> postPage = postRepository.findAllByUserId(userId, pageable);
 		return createResponsePage(postPage);
 	}
-	
-	
 
+	private PostResponse createResponse(Post post) {
+		PostResponse response = new PostResponse();
+		response.setPostId(post.getId());
+		if (post.getParent() != null)
+			response.setParentId(post.getParent().getId());
+		response.setTopicId(post.getTopic().getId());
+		response.setText(post.getText());
+		response.setCreatedOn(post.getCreatedOn());
+		response.setUserId(post.getUser().getId());
+		createLinks(response);
+		return response;
+	}
+
+	private PagedModel<PostResponse> createResponsePage(Page<Post> postPage) {
+		int size = postPage.getSize();
+		int page = postPage.getNumber() + 1;
+		int totalPages = postPage.getTotalPages();
+		long totalElements = postPage.getTotalElements();
+		PageMetadata metadata = new PageMetadata(size, page, totalElements, totalPages);
+		List<PostResponse> responses = new ArrayList<>();
+		for (Post post : postPage.getContent()) {
+			PostResponse response = createResponse(post);
+			responses.add(response);
+		}
+		return new PagedModel<>(responses, metadata);
+	}
+
+	private void createLinks(PostResponse response) {
+		Link selfLink = linkTo(methodOn(PostController.class).getPost(response.getPostId())).withSelfRel();
+		if (response.getParentId() != 0) {
+			Link parentLink = linkTo(methodOn(PostController.class).getPost(response.getParentId())).withRel("parent");
+			response.add(parentLink);
+		}
+		Link userLink = linkTo(methodOn(UserController.class).getUser(response.getUserId())).withRel("user");
+		Link topicLink = linkTo(methodOn(TopicController.class).getTopic(response.getTopicId())).withRel("topic");
+		response.add(selfLink, userLink, topicLink);
+	}
 }
