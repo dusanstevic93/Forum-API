@@ -12,6 +12,4 @@ public interface UserService {
 	UserResponse getUser(long userId);
 	
 	PagedModel<UserResponse> getUsers(int page, int limit);
-	
-	String activateAccount(String token);
 }

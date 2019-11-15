@@ -31,7 +31,7 @@ CREATE TABLE `forum` (
   PRIMARY KEY (`id`),
   KEY `fk_forum_forum1_idx` (`parent_forum_id`),
   CONSTRAINT `fk_forum_forum1` FOREIGN KEY (`parent_forum_id`) REFERENCES `forum` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `forum` (
 
 LOCK TABLES `forum` WRITE;
 /*!40000 ALTER TABLE `forum` DISABLE KEYS */;
-INSERT INTO `forum` VALUES (1,'forum 1',NULL),(2,'forum 2',NULL),(3,'forum 3',NULL),(4,'forum 4',NULL),(5,'forum 5',NULL),(6,'subforum of forum 1',1),(7,'subforum of forum 1',1),(8,'subforum of forum 1',1),(9,'subforum of forum 1',1),(10,'subforum of forum 1',1);
+INSERT INTO `forum` VALUES (1,'forum 1',NULL),(2,'forum 2',NULL),(3,'forum 3',NULL),(4,'forum 4',NULL),(5,'forum 5',NULL),(6,'subforum of forum 1',1),(7,'subforum of forum 1',1),(8,'subforum of forum 1',1),(9,'subforum of forum 1',1),(10,'subforum of forum 1',1),(11,'token test',NULL);
 /*!40000 ALTER TABLE `forum` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -74,7 +74,7 @@ CREATE TABLE `post` (
 
 LOCK TABLES `post` WRITE;
 /*!40000 ALTER TABLE `post` DISABLE KEYS */;
-INSERT INTO `post` VALUES (2,'some post on movie topic','2019-11-11 22:26:43',NULL,2,1),(3,'some post on movie topic','2019-11-11 22:32:47',NULL,2,2);
+INSERT INTO `post` VALUES (3,'some post on movie topic','2019-11-11 22:32:47',NULL,2,2);
 /*!40000 ALTER TABLE `post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -127,7 +127,7 @@ CREATE TABLE `role_user` (
 
 LOCK TABLES `role_user` WRITE;
 /*!40000 ALTER TABLE `role_user` DISABLE KEYS */;
-INSERT INTO `role_user` VALUES (2,1),(1,2),(2,2),(2,6),(2,7);
+INSERT INTO `role_user` VALUES (1,2),(2,2),(2,7),(2,11);
 /*!40000 ALTER TABLE `role_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -180,7 +180,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -189,7 +189,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'test user','test user','test@mail.com','2019-11-08 23:34:49',1),(2,'admin','$2a$10$tL0TWOXkIwvpFO2iErA5w.HnVQasHvVPxGtKufZw7HiISuhvx7K.O','admin@mail.com','2019-11-11 00:22:22',1),(6,'dusan','$2a$10$Gg0M5oM8OVBK9tzXRKX47O4Cas.OhH5ddh3oJmJIaw22taJtJ8jb.','dusanstevic93java@gmail.com','2019-11-11 15:32:08',0),(7,'userproba','$2a$10$FNFoOAXdbT0fJNCzJQ8i6.DZBcvuHou4DmiI/qEHnMCxuFuMlkwHG','user@mail.com','2019-11-11 23:04:46',1);
+INSERT INTO `user` VALUES (2,'admin','$2a$10$tL0TWOXkIwvpFO2iErA5w.HnVQasHvVPxGtKufZw7HiISuhvx7K.O','admin@mail.com','2019-11-11 00:22:22',1),(7,'userproba','$2a$10$FNFoOAXdbT0fJNCzJQ8i6.DZBcvuHou4DmiI/qEHnMCxuFuMlkwHG','user@mail.com','2019-11-11 23:04:46',1),(11,'verification test','$2a$10$bgqjrsHbNaAmsxiFIf07q.jC.dyF2nXGLjcmWkaAQ5eu6uAloQ9d6','dusanstevic93java@gmail.com','2019-11-14 23:50:59',1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -208,7 +208,7 @@ CREATE TABLE `verification_token` (
   PRIMARY KEY (`id`),
   KEY `fk_user_idx` (`user_id`),
   CONSTRAINT `fk_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -229,4 +229,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-13 20:14:52
+-- Dump completed on 2019-11-15  1:34:12

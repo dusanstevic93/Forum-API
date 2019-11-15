@@ -45,12 +45,4 @@ public class UserController {
 			@RequestParam(value = "limit", defaultValue = "10") int limit){
 		return userService.getUsers(page, limit);
 	}
-	
-	// activate user account
-	@GetMapping("/account-activation")
-	public String accountActivation(@RequestParam("token") String token) {
-		return userService.activateAccount(token);
-	}
-	
-	
 }

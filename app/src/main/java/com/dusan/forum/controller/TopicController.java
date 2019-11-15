@@ -31,7 +31,7 @@ public class TopicController {
 		topicService.createTopic(forumId, createTopicRequest);
 	}
 
-	// get single topic
+	// get specific topic
 	@GetMapping("/topics/{topicId}")
 	public TopicResponse getTopic(@PathVariable long topicId) {
 		return topicService.getTopic(topicId);
@@ -55,7 +55,7 @@ public class TopicController {
 		return topicService.getUserTopics(userId, page, limit);
 	}
 
-	// delete single topic
+	// delete topic
 	@DeleteMapping("/topics/{topicId}")
 	public void deleteTopic(@PathVariable long topicId) {
 		topicService.deleteTopic(topicId);
