@@ -18,7 +18,8 @@ import com.dusan.forum.dao.UserRepository;
 import com.dusan.forum.dao.VerificationTokenRepository;
 import com.dusan.forum.domain.User;
 import com.dusan.forum.domain.VerificationToken;
-import com.dusan.forum.response.AccountActivationResponse;
+import com.dusan.forum.exception.ExpiredLinkException;
+import com.dusan.forum.exception.InvalidLinkException;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -35,18 +36,17 @@ public class AccountServiceImp implements AccountService {
 	private JavaMailSender mailSender;
 
 	@Override
-	public AccountActivationResponse activate(String token) {
+	public void activate(String token) {
 		Optional<VerificationToken> optToken = tokenRepository.findByToken(token);
 		if (!optToken.isPresent())
-			return new AccountActivationResponse("Invalid link");
+			throw new InvalidLinkException();
 		VerificationToken vt = optToken.get();
 		if (LocalDateTime.now().compareTo(vt.getExpire()) > 0)
-			return new AccountActivationResponse("Expired link");
+			throw new ExpiredLinkException();
 		User user = vt.getUser();
 		user.setEnabled(true);
 		userRepository.save(user);
 		tokenRepository.delete(vt);
-		return new AccountActivationResponse("Successful activation");
 	}
 
 	@Override
@@ -74,6 +74,8 @@ public class AccountServiceImp implements AccountService {
 	@Override
 	public void resendActivationMail(String token) {
 		Optional<VerificationToken> optToken = tokenRepository.findByToken(token);
+		if (!optToken.isPresent())
+			throw new InvalidLinkException();
 		VerificationToken verificationToken = optToken.get();
 		User user = verificationToken.getUser();
 		tokenRepository.delete(verificationToken);

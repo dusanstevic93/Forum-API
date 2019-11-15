@@ -19,7 +19,8 @@ public class AccountController {
 	// activate user account
 	@GetMapping
 	public AccountActivationResponse accountActivation(@RequestParam("token") String token) {
-		return accountService.activate(token);
+		accountService.activate(token);
+		return new AccountActivationResponse("Successful activation");
 	}
 	
 	// resend activation link
