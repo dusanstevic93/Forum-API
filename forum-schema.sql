@@ -31,7 +31,7 @@ CREATE TABLE `forum` (
   PRIMARY KEY (`id`),
   KEY `fk_forum_forum1_idx` (`parent_forum_id`),
   CONSTRAINT `fk_forum_forum1` FOREIGN KEY (`parent_forum_id`) REFERENCES `forum` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `forum` (
 
 LOCK TABLES `forum` WRITE;
 /*!40000 ALTER TABLE `forum` DISABLE KEYS */;
-INSERT INTO `forum` VALUES (1,'forum 1',NULL),(2,'forum 2',NULL),(3,'forum 3',NULL),(4,'forum 4',NULL),(5,'forum 5',NULL),(6,'subforum of forum 1',1),(7,'subforum of forum 1',1),(8,'subforum of forum 1',1),(9,'subforum of forum 1',1),(10,'subforum of forum 1',1),(11,'token test',NULL);
+INSERT INTO `forum` VALUES (13,'test forum',NULL),(14,'forum2',NULL);
 /*!40000 ALTER TABLE `forum` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -65,7 +65,7 @@ CREATE TABLE `post` (
   CONSTRAINT `fk_post_post1` FOREIGN KEY (`parent_post_id`) REFERENCES `post` (`id`),
   CONSTRAINT `fk_post_topic1` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`id`),
   CONSTRAINT `fk_post_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,7 +74,6 @@ CREATE TABLE `post` (
 
 LOCK TABLES `post` WRITE;
 /*!40000 ALTER TABLE `post` DISABLE KEYS */;
-INSERT INTO `post` VALUES (3,'some post on movie topic','2019-11-11 22:32:47',NULL,2,2);
 /*!40000 ALTER TABLE `post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -127,7 +126,7 @@ CREATE TABLE `role_user` (
 
 LOCK TABLES `role_user` WRITE;
 /*!40000 ALTER TABLE `role_user` DISABLE KEYS */;
-INSERT INTO `role_user` VALUES (1,2),(2,2),(2,7),(2,11);
+INSERT INTO `role_user` VALUES (2,13),(2,14),(1,15);
 /*!40000 ALTER TABLE `role_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -150,7 +149,7 @@ CREATE TABLE `topic` (
   KEY `fk_topic_forum1_idx` (`forum_id`),
   CONSTRAINT `fk_topic_forum1` FOREIGN KEY (`forum_id`) REFERENCES `forum` (`id`),
   CONSTRAINT `fk_topic_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,7 +158,7 @@ CREATE TABLE `topic` (
 
 LOCK TABLES `topic` WRITE;
 /*!40000 ALTER TABLE `topic` DISABLE KEYS */;
-INSERT INTO `topic` VALUES (2,'movies','2019-11-11 22:23:31',2,4);
+INSERT INTO `topic` VALUES (3,'member1\'s topic','2019-11-25 23:39:42',13,13),(4,'member2\'s topic','2019-11-25 23:41:29',14,13);
 /*!40000 ALTER TABLE `topic` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -176,11 +175,10 @@ CREATE TABLE `user` (
   `password` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `created_on` timestamp NOT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -189,35 +187,8 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (2,'admin','$2a$10$tL0TWOXkIwvpFO2iErA5w.HnVQasHvVPxGtKufZw7HiISuhvx7K.O','admin@mail.com','2019-11-11 00:22:22',1),(7,'userproba','$2a$10$FNFoOAXdbT0fJNCzJQ8i6.DZBcvuHou4DmiI/qEHnMCxuFuMlkwHG','user@mail.com','2019-11-11 23:04:46',1),(11,'verification test','$2a$10$bgqjrsHbNaAmsxiFIf07q.jC.dyF2nXGLjcmWkaAQ5eu6uAloQ9d6','dusanstevic93java@gmail.com','2019-11-14 23:50:59',1);
+INSERT INTO `user` VALUES (13,'member1','$2a$10$QR2jCOplTwrGBr60EUg90evTIEDf6e8Br91mnQh/nvx3xXpbidvKu','member1@mail.com','2019-11-25 19:16:39'),(14,'member2','$2a$10$4WPsSaR3P/SqX57VM1qrXuYQaEbuv13G8SkaV6aaMnfB9n6Y7fpNa','member2@mail.com','2019-11-25 19:27:13'),(15,'admin1','$2a$10$oCX/5z9zpH5UxBgjf2hkpunJSm8uPCnq7LGlbJI/wn0byuYJNEWAm','admin1@mail.com','2019-11-25 19:30:11');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `verification_token`
---
-
-DROP TABLE IF EXISTS `verification_token`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `verification_token` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `token` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `expire` timestamp NOT NULL,
-  `user_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_user_idx` (`user_id`),
-  CONSTRAINT `fk_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `verification_token`
---
-
-LOCK TABLES `verification_token` WRITE;
-/*!40000 ALTER TABLE `verification_token` DISABLE KEYS */;
-/*!40000 ALTER TABLE `verification_token` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -229,4 +200,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-15  1:34:12
+-- Dump completed on 2019-11-26 14:01:30

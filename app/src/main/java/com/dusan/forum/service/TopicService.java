@@ -9,7 +9,7 @@ import com.dusan.forum.response.TopicResponse;
 public interface TopicService {
 
 	@Secured({ "ROLE_MEMBER" })
-	void createTopic(long forumId, TopicRequest createTopicRequest);
+	void createTopic(long forumId, String username, TopicRequest createTopicRequest);
 
 	@Secured({ "ROLE_ADMIN" })
 	void deleteTopic(long topicId);

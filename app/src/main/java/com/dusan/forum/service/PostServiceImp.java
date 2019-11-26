@@ -44,16 +44,16 @@ public class PostServiceImp implements PostService {
 	private PostRepository postRepository;
 
 	@Override
-	public void createPost(long topicId, PostRequest createPostRequest) {
+	public void createPost(long topicId, long parentId, String username, PostRequest createPostRequest) {
 		Post post = new Post();
-		Optional<User> optUser = userRepository.findById(createPostRequest.getUserId());
+		Optional<User> optUser = userRepository.findByUsername(username);
 		if (!optUser.isPresent())
 			throw new UserNotFoundException();
 		Optional<Topic> optTopic = topicRepository.findById(topicId);
 		if (!optTopic.isPresent())
 			throw new TopicNotFoundException();
-		if (createPostRequest.getParentId() != null) {
-			Optional<Post> optPost = postRepository.findById(createPostRequest.getParentId());
+		if (parentId != 0) {
+			Optional<Post> optPost = postRepository.findById(parentId);
 			if (!optPost.isPresent())
 				throw new PostNotFoundException();
 			post.setParentPost(optPost.get());
@@ -74,11 +74,20 @@ public class PostServiceImp implements PostService {
 	}
 
 	@Override
-	public void deletePost(long postId) {
+	public void deleteAnyPost(long postId) {
 		Optional<Post> optPost = postRepository.findById(postId);
 		if (!optPost.isPresent())
 			throw new PostNotFoundException();
 		postRepository.delete(optPost.get());
+	}
+
+	@Override
+	public void deleteUserPost(String username, long postId) {
+		Optional<Post> optPost = postRepository.findByUserUsernameAndId(username, postId);
+		if (!optPost.isPresent())
+			throw new PostNotFoundException();
+		postRepository.delete(optPost.get());
+		
 	}
 
 	@Override
@@ -99,8 +108,8 @@ public class PostServiceImp implements PostService {
 	}
 
 	@Override
-	public void editPost(long postId, PostRequest editPostRequest) {
-		Optional<Post> optPost = postRepository.findById(postId);
+	public void editPost(long postId, String username, PostRequest editPostRequest) {
+		Optional<Post> optPost = postRepository.findByUserUsernameAndId(username, postId);
 		if (!optPost.isPresent())
 			throw new PostNotFoundException();
 		Post post = optPost.get();

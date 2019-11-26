@@ -9,15 +9,18 @@ import com.dusan.forum.response.PostResponse;
 public interface PostService {
 
 	@Secured({ "ROLE_MEMBER" })
-	void createPost(long topicId, PostRequest createPostRequest);
+	void createPost(long topicId, long parentId, String username, PostRequest createPostRequest);
 
 	PostResponse getPost(long postId);
 
-	@Secured({ "ROLE_MEMBER" })
-	void deletePost(long postId);
+	@Secured({ "ROLE_ADMIN" })
+	void deleteAnyPost(long postId);
+	
+	@Secured({ "ROLE_MEMBER"})
+	void deleteUserPost(String username, long postId);
 
 	@Secured({ "ROLE_MEMBER" })
-	void editPost(long postId, PostRequest editPostRequest);
+	void editPost(long postId, String username, PostRequest editPostRequest);
 
 	PagedModel<PostResponse> getTopicPosts(long topicId, int page, int limit);
 

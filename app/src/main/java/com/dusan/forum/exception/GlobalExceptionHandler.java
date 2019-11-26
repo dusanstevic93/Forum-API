@@ -14,6 +14,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.dusan.forum.response.ExceptionResponse;
 
+import io.swagger.v3.oas.annotations.Hidden;
+
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -22,6 +25,7 @@ public class GlobalExceptionHandler {
 	public ExceptionResponse handleException(Exception e) {
 		return new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
 	}
+	
 	
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.NOT_FOUND)

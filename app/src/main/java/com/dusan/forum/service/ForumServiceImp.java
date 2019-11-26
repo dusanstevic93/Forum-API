@@ -29,10 +29,10 @@ public class ForumServiceImp implements ForumService {
 	private ForumRepository forumRepository;
 	
 	@Override
-	public void createForum(ForumRequest createForumRequest) {
+	public void createForum(long parentId, ForumRequest createForumRequest) {
 		Forum forum = new Forum();
-		if (createForumRequest.getParentId() != null) {
-			Optional<Forum> optForum = forumRepository.findById(createForumRequest.getParentId());
+		if (parentId != 0) {
+			Optional<Forum> optForum = forumRepository.findById(parentId);
 			if (!optForum.isPresent())
 				throw new ForumNotFoundException();
 			forum.setParentForum(optForum.get());
@@ -81,7 +81,7 @@ public class ForumServiceImp implements ForumService {
 		if (forum.getParentForum() != null)
 			response.setParentId(forum.getParentForum().getId());
 		response.setName(forum.getName());
-		createLinks(forum, response);
+		createLinks(response);
 		return response;
 	}
 
@@ -99,8 +99,8 @@ public class ForumServiceImp implements ForumService {
 		return new PagedModel<>(responses, metadata);
 	}
 	
-	private void createLinks(Forum forum, ForumResponse response) {
-		if (forum.getParentForum() != null) {
+	private void createLinks(ForumResponse response) {
+		if (response.getParentId() != 0) {
 			Link linkToParent = linkTo(methodOn(ForumController.class).getForum(response.getParentId())).withRel("parent");
 			response.add(linkToParent);
 		}

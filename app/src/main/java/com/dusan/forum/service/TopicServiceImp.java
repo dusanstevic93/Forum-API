@@ -50,9 +50,9 @@ public class TopicServiceImp implements TopicService {
 	}
 
 	@Override
-	public void createTopic(long forumId, TopicRequest createTopicRequest) {
+	public void createTopic(long forumId, String username, TopicRequest createTopicRequest) {
 		Topic topic = new Topic();
-		Optional<User> optUser = userRepository.findById(createTopicRequest.getUserId());
+		Optional<User> optUser = userRepository.findByUsername(username);
 		if(!optUser.isPresent())
 			throw new UserNotFoundException();
 		Optional<Forum> optForum = forumRepository.findById(forumId);

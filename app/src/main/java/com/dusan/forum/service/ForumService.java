@@ -9,7 +9,7 @@ import com.dusan.forum.response.ForumResponse;
 public interface ForumService {
 
 	@Secured({ "ROLE_ADMIN" })
-	void createForum(ForumRequest createForumRequest);
+	void createForum(long parentId, ForumRequest createForumRequest);
 	
 	PagedModel<ForumResponse> getAllForums(int page, int limit);
 	

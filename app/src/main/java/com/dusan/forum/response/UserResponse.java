@@ -1,5 +1,6 @@
 package com.dusan.forum.response;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ public class UserResponse extends RepresentationModel<UserResponse> {
 	private Long id;
 	private String username;
 	private String email;
+	private LocalDateTime createdOn;
 	private Set<String> roles;
 	
 	public Long getId() {
@@ -38,6 +40,14 @@ public class UserResponse extends RepresentationModel<UserResponse> {
 
 	public Set<String> getRole() {
 		return roles;
+	}
+	
+	public LocalDateTime getCreatedOn() {
+		return createdOn;
+	}
+	
+	public void setCreatedOn(LocalDateTime createdOn) {
+		this.createdOn = createdOn;
 	}
 
 	public void setRole(Set<String> role) {

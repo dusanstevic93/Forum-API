@@ -1,10 +1,15 @@
 package com.dusan.forum.controller;
 
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,28 +23,42 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dusan.forum.request.PostRequest;
 import com.dusan.forum.response.PostResponse;
 import com.dusan.forum.service.PostService;
+import com.dusan.forum.swagger.OperationDescription;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Post")
 @RestController
 public class PostController {
 
 	@Autowired
 	private PostService postService;
 
-	// create new post on specific topic
-	@PostMapping("/topics/{topicId}/posts")
+	@Operation(summary = "Create post", description = OperationDescription.CREATE_POST,
+			security = @SecurityRequirement(name = "JWTAuth"))
+	@PostMapping(value = "/topics/{topicId}/posts", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
-	public void createPost(@PathVariable long topicId, @Valid @RequestBody PostRequest createPostRequest) {
-		postService.createPost(topicId, createPostRequest);
+	public void createPost(
+			@PathVariable long topicId, 
+			@RequestParam(value = "parentId", defaultValue = "0") long parentId,
+			@Valid @RequestBody PostRequest createPostRequest,
+			@Parameter(hidden = true) Authentication auth) {
+		if (auth == null)
+			throw new AccessDeniedException("Unauthenticated");
+		postService.createPost(topicId, parentId, auth.getName(), createPostRequest);
 	}
 
-	// get single post
-	@GetMapping("/posts/{postId}")
+	@Operation(summary = "Get post", description = OperationDescription.GET_POST)
+	@GetMapping(value = "/posts/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public PostResponse getPost(@PathVariable long postId) {
 		return postService.getPost(postId);
 	}
 	
-	// get sub posts
-	@GetMapping("/posts/{postId}/posts")
+	@Operation(summary = "Get sub posts", description = OperationDescription.GET_SUB_POSTS)
+	@GetMapping(value = "/posts/{postId}/posts", produces = MediaType.APPLICATION_JSON_VALUE)
 	public PagedModel<PostResponse> getSubPosts(
 			@PathVariable long postId, 
 			@RequestParam(value = "page", defaultValue = "1") int page, 
@@ -47,8 +66,8 @@ public class PostController {
 		return postService.getSubPosts(postId, page, limit);
 	}
 	
-	// get topic posts
-	@GetMapping("/topics/{topicId}/posts")
+	@Operation(summary = "Get topic posts", description = OperationDescription.GET_TOPIC_POSTS)
+	@GetMapping(value = "/topics/{topicId}/posts", produces = MediaType.APPLICATION_JSON_VALUE)
 	public PagedModel<PostResponse> getTopicPosts(
 			@PathVariable long topicId,
 			@RequestParam(value = "page", defaultValue = "1") int page,
@@ -56,8 +75,8 @@ public class PostController {
 		return postService.getTopicPosts(topicId, page, limit);
 	}
 
-	// get user posts
-	@GetMapping("/users/{userId}/posts")
+	@Operation(summary = "Get user posts", description = OperationDescription.GET_USER_POSTS)
+	@GetMapping(value = "/users/{userId}/posts", produces = MediaType.APPLICATION_JSON_VALUE)
 	public PagedModel<PostResponse> getUserPosts(
 			@PathVariable long userId,
 			@RequestParam(value = "page", defaultValue = "1") int page,
@@ -65,16 +84,28 @@ public class PostController {
 		return postService.getUserPosts(userId, page, limit);
 	}
 	
-	// edit post
-	@PutMapping("/posts/{postId}")
-	public void editPost(@PathVariable long userId, @PathVariable long postId, 
-			@Valid @RequestBody PostRequest editPostRequest) {
-		postService.editPost(postId, editPostRequest);
+	@Operation(summary = "Edit post", description = OperationDescription.EDIT_POST, 
+			security = @SecurityRequirement(name = "JWTAuth"))
+	@PutMapping(value = "/posts/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public void editPost(
+			@PathVariable long postId, 
+			@Valid @RequestBody PostRequest editPostRequest,
+			@Parameter(hidden = true) Authentication auth) {
+		if (auth == null)
+			throw new AccessDeniedException("Unauthenticated");
+		postService.editPost(postId, auth.getName(), editPostRequest);
 	}
 
-	// delete single post
-	@DeleteMapping("/posts/{postId}")
-	public void deletePost(@PathVariable long postId) {
-		postService.deletePost(postId);
+	@Operation(summary = "Delete post", description = OperationDescription.DELETE_POST,
+			security = @SecurityRequirement(name = "JWTAuth"))
+	@DeleteMapping(value = "/posts/{postId}")
+	public void deletePost(@PathVariable long postId, @Parameter(hidden = true) Authentication auth) {
+		if (auth == null)
+			throw new AccessDeniedException("Unauthenticated");
+		if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
+			postService.deleteAnyPost(postId);
+		else
+			postService.deleteUserPost(auth.getName(), postId);
+				
 	}
 }

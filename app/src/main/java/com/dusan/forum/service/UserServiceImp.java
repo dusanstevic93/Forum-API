@@ -41,9 +41,6 @@ public class UserServiceImp implements UserService {
 	@Autowired
 	private PasswordEncoder encoder;
 
-	@Autowired
-	private AccountService accountService;
-
 	@Override
 	public void createUser(UserRequest userRequest) {
 		User user = new User();
@@ -56,10 +53,9 @@ public class UserServiceImp implements UserService {
 		user.setUsername(userRequest.getUsername());
 		user.setPassword(encoder.encode(userRequest.getPassword()));
 		user.setEmail(userRequest.getEmail());
-		user.addRole(roleRepository.getOne(2L));
-		// user.setEnabled(true); // disable email verification
+		user.addRole(roleRepository.findByName("MEMBER"));
 		userRepository.save(user);
-		accountService.sendActivationMail(user);
+
 	}
 
 	@Override
@@ -84,6 +80,7 @@ public class UserServiceImp implements UserService {
 		response.setId(user.getId());
 		response.setUsername(user.getUsername());
 		response.setEmail(user.getEmail());
+		response.setCreatedOn(user.getCreatedOn());
 		user.getRoles().forEach(role -> response.addRole(role.getName()));
 		createLinks(response);
 		return response;

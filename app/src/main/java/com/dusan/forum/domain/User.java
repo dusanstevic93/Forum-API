@@ -30,8 +30,6 @@ public class User {
 	@CreationTimestamp
 	private LocalDateTime createdOn;
 
-	private boolean enabled;
-
 	@ManyToMany
 	@JoinTable(
 			name = "role_user", 
@@ -70,14 +68,6 @@ public class User {
 
 	public LocalDateTime getCreatedOn() {
 		return createdOn;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
 	}
 
 	public Set<Role> getRoles() {

@@ -54,7 +54,11 @@ public class UserDetailsImp implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return user.isEnabled();
+		return true;
+	}
+	
+	public long getId() {
+		return user.getId();
 	}
 
 }
