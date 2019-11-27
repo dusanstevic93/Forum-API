@@ -81,18 +81,6 @@ public class GlobalExceptionHandler {
 	}
 	
 	@ExceptionHandler
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ExceptionResponse handleException(InvalidLinkException e) {
-		return new ExceptionResponse(HttpStatus.BAD_REQUEST, "Invalid link");
-	}
-	
-	@ExceptionHandler
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ExceptionResponse handleException(ExpiredLinkException e) {
-		return new ExceptionResponse(HttpStatus.BAD_REQUEST, "Expired link");
-	}
-	
-	@ExceptionHandler
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	public ExceptionResponse handleException(AccessDeniedException e) {
 		return new ExceptionResponse(HttpStatus.FORBIDDEN, "Unautorized access");
