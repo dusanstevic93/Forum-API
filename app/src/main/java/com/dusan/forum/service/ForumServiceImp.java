@@ -105,8 +105,14 @@ public class ForumServiceImp implements ForumService {
 			response.add(linkToParent);
 		}
 		Link selfLink = linkTo(methodOn(ForumController.class).getForum(response.getId())).withSelfRel();
-		Link linkToSubForums = linkTo(ForumController.class).slash(response.getId()).slash("forums").withRel("sub-forums");
-		Link linkToTopics = linkTo(ForumController.class).slash(response.getId()).slash("topics").withRel("topics");
+		Link linkToSubForums = linkTo(ForumController.class)
+				.slash(response.getId())
+				.slash("forums")
+				.withRel("sub-forums");
+		Link linkToTopics = linkTo(ForumController.class)
+				.slash(response.getId())
+				.slash("topics")
+				.withRel("topics");
 		response.add(selfLink, linkToSubForums, linkToTopics);
 	}
 }

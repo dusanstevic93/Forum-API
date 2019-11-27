@@ -38,7 +38,7 @@ public class UserResponse extends RepresentationModel<UserResponse> {
 		this.email = email;
 	}
 
-	public Set<String> getRole() {
+	public Set<String> getRoles() {
 		return roles;
 	}
 	
@@ -50,7 +50,7 @@ public class UserResponse extends RepresentationModel<UserResponse> {
 		this.createdOn = createdOn;
 	}
 
-	public void setRole(Set<String> role) {
+	public void setRoles(Set<String> role) {
 		this.roles = role;
 	}
 

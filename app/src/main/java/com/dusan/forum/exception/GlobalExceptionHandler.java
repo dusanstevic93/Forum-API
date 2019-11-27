@@ -5,6 +5,8 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,6 +55,12 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse handleException(IllegalArgumentException e) {
+		return new ExceptionResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+	}
+	
+	@ExceptionHandler
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse handleException(MethodArgumentNotValidException ex) {
 		StringBuilder errors = new StringBuilder();
 		ex.getBindingResult().getAllErrors().forEach(e -> errors.append(e.getDefaultMessage() + ";"));
@@ -78,6 +86,18 @@ public class GlobalExceptionHandler {
 		String message = "Required parameter " + e.getParameterName() + 
 				" of type " + e.getParameterType() + " is missing";
 		return new ExceptionResponse(HttpStatus.BAD_REQUEST, message);
+	}
+	
+	@ExceptionHandler
+	@ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+	public ExceptionResponse handleException(HttpRequestMethodNotSupportedException e) {
+		return new ExceptionResponse(HttpStatus.METHOD_NOT_ALLOWED, e.getMessage());
+	}
+	
+	@ExceptionHandler
+	@ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+	public ExceptionResponse handleException(HttpMediaTypeNotSupportedException e) {
+		return new ExceptionResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e.getMessage());
 	}
 	
 	@ExceptionHandler

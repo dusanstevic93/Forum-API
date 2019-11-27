@@ -130,7 +130,11 @@ public class TopicServiceImp implements TopicService {
 	
 	private void createLinks(TopicResponse response) {
 		Link selfLink = linkTo(methodOn(TopicController.class).getTopic(response.getId())).withSelfRel();
-		Link linkToPosts = linkTo(PostController.class).slash("topics").slash(response.getId()).slash("posts").withRel("posts");
+		Link linkToPosts = linkTo(PostController.class)
+				.slash("topics")
+				.slash(response.getId())
+				.slash("posts")
+				.withRel("posts");
 		Link linkToUser = linkTo(methodOn(UserController.class).getUser(response.getUserId())).withRel("user");
 		response.add(selfLink, linkToPosts, linkToUser);
 	}
