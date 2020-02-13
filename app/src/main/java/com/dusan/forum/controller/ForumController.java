@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +39,7 @@ public class ForumController {
 			security = @SecurityRequirement(name = "JWTAuth"))
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
+	@Secured({ "ROLE_ADMIN" })
 	public void createForum(
 			@Valid @RequestBody ForumRequest createForumRequest,
 			@RequestParam(value = "parentId", defaultValue = "0") long parentId) {

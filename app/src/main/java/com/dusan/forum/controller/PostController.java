@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,13 +41,12 @@ public class PostController {
 			security = @SecurityRequirement(name = "JWTAuth"))
 	@PostMapping(value = "/topics/{topicId}/posts", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
+	@Secured({ "ROLE_MEMBER" })
 	public void createPost(
 			@PathVariable long topicId, 
 			@RequestParam(value = "parentId", defaultValue = "0") long parentId,
 			@Valid @RequestBody PostRequest createPostRequest,
 			@Parameter(hidden = true) Authentication auth) {
-		if (auth == null)
-			throw new AccessDeniedException("Unauthenticated");
 		postService.createPost(topicId, parentId, auth.getName(), createPostRequest);
 	}
 
@@ -87,21 +86,19 @@ public class PostController {
 	@Operation(summary = "Edit post", description = OperationDescription.EDIT_POST, 
 			security = @SecurityRequirement(name = "JWTAuth"))
 	@PutMapping(value = "/posts/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@Secured({ "ROLE_MEMBER" })
 	public void editPost(
 			@PathVariable long postId, 
 			@Valid @RequestBody PostRequest editPostRequest,
 			@Parameter(hidden = true) Authentication auth) {
-		if (auth == null)
-			throw new AccessDeniedException("Unauthenticated");
 		postService.editPost(postId, auth.getName(), editPostRequest);
 	}
 
 	@Operation(summary = "Delete post", description = OperationDescription.DELETE_POST,
 			security = @SecurityRequirement(name = "JWTAuth"))
 	@DeleteMapping(value = "/posts/{postId}")
+	@Secured({ "ROLE_ADMIN", "ROLE_MEMBER" })
 	public void deletePost(@PathVariable long postId, @Parameter(hidden = true) Authentication auth) {
-		if (auth == null)
-			throw new AccessDeniedException("Unauthenticated");
 		if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
 			postService.deleteAnyPost(postId);
 		else

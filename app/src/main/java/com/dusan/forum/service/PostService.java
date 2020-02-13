@@ -1,25 +1,20 @@
 package com.dusan.forum.service;
 
 import org.springframework.hateoas.PagedModel;
-import org.springframework.security.access.annotation.Secured;
 
 import com.dusan.forum.request.PostRequest;
 import com.dusan.forum.response.PostResponse;
 
 public interface PostService {
 
-	@Secured({ "ROLE_MEMBER" })
 	void createPost(long topicId, long parentId, String username, PostRequest createPostRequest);
 
 	PostResponse getPost(long postId);
 
-	@Secured({ "ROLE_ADMIN" })
 	void deleteAnyPost(long postId);
 	
-	@Secured({ "ROLE_MEMBER"})
 	void deleteUserPost(String username, long postId);
 
-	@Secured({ "ROLE_MEMBER" })
 	void editPost(long postId, String username, PostRequest editPostRequest);
 
 	PagedModel<PostResponse> getTopicPosts(long topicId, int page, int limit);

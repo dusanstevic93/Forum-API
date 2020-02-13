@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,12 +38,11 @@ public class TopicController {
 			security = @SecurityRequirement(name = "JWTAuth"))
 	@PostMapping(value = "/forums/{forumId}/topics", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
+	@Secured({ "ROLE_MEMBER" })
 	public void createTopic(
 			@PathVariable long forumId, 
 			@Valid @RequestBody TopicRequest createTopicRequest,
 			@Parameter(hidden = true) Authentication auth) {
-		if (auth == null)
-			throw new AccessDeniedException("Unauthorized");
 		topicService.createTopic(forumId, auth.getName(), createTopicRequest);
 	}
 
@@ -74,6 +73,7 @@ public class TopicController {
 	@Operation(summary = "Delete topic", description = OperationDescription.DELETE_TOPIC,
 			security = @SecurityRequirement(name = "JWTAuth"))
 	@DeleteMapping("/topics/{topicId}")
+	@Secured({ "ROLE_ADMIN" })
 	public void deleteTopic(@PathVariable long topicId) {
 		topicService.deleteTopic(topicId);
 	}
